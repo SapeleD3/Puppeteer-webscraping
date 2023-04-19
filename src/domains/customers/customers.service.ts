@@ -11,7 +11,9 @@ export default class CustomersService {
     private customerModel: Model<CustomersDocument>,
   ) {}
 
-  async create(createCustomerDto: FormattedCustomerData): Promise<Customers> {
+  async create(
+    createCustomerDto: FormattedCustomerData,
+  ): Promise<CustomersDocument> {
     const createdCustomer = new this.customerModel(createCustomerDto);
     return createdCustomer.save();
   }
@@ -20,7 +22,9 @@ export default class CustomersService {
     return this.customerModel.find().exec();
   }
 
-  async find(props: FilterQuery<CustomersDocument>): Promise<Customers> {
+  async find(
+    props: FilterQuery<CustomersDocument>,
+  ): Promise<CustomersDocument> {
     return this.customerModel.findOne(props).exec();
   }
 }

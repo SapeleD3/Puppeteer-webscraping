@@ -1,6 +1,9 @@
-import { Institutions } from './enums';
 import { Injectable } from '@nestjs/common';
-import { FormattedAuthData, FormattedCustomerData } from './formatter.dto';
+import {
+  FormattedAccounstData,
+  FormattedAuthData,
+  FormattedCustomerData,
+} from './formatter.dto';
 
 // minimalistic standardized formatter
 @Injectable()
@@ -12,7 +15,7 @@ export default class Formatter {
     return payload;
   }
 
-  accountsFormatter(payload: any) {
+  accountsFormatter(payload: FormattedAccounstData) {
     return payload;
   }
 

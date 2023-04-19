@@ -9,7 +9,12 @@ import Formatter from 'src/common/formatter.service';
 import { Institutions } from 'src/common/enums';
 import { FormattedAuthData } from 'src/common/formatter.dto';
 import CustomersService from '../customers/customers.service';
+import AccountsService from '../accounts/accounts.service';
 
+const currencyMap = {
+  $: 'USD',
+  '₦': 'NGN',
+};
 @Injectable()
 export default class AuthService {
   constructor(
@@ -18,9 +23,10 @@ export default class AuthService {
     private readonly okraScraper: ScrapeBankOfOkra,
     private readonly formatter: Formatter,
     private readonly customersService: CustomersService,
+    private readonly accountsService: AccountsService,
   ) {}
 
-  async create(createAuthDto: FormattedAuthData): Promise<Auth> {
+  async create(createAuthDto: FormattedAuthData): Promise<AuthDocument> {
     const createdCat = new this.authModel(createAuthDto);
     return createdCat.save();
   }
@@ -29,7 +35,7 @@ export default class AuthService {
     return this.authModel.find().exec();
   }
 
-  async find(props: FilterQuery<AuthDocument>): Promise<Auth> {
+  async find(props: FilterQuery<AuthDocument>): Promise<AuthDocument> {
     return this.authModel.findOne(props).exec();
   }
 
@@ -40,17 +46,21 @@ export default class AuthService {
       throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    const user = await this.find({ email: payload.email });
+    const authUser = await this.find({ email: payload.email });
+    let authId = authUser?._id;
 
-    if (!user) {
+    if (!authUser) {
       const authData = this.formatter.authFormatter(payload);
-      this.create(authData);
+      const createdAuth = await this.create(authData);
+      authId = createdAuth._id;
     }
 
     await this.okraScraper.closeBrowser();
 
     return {
-      data: null,
+      data: {
+        authId: authUser._id,
+      },
       message: 'Login successful please input otp',
     };
   }
@@ -74,12 +84,18 @@ export default class AuthService {
       throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    const customerDetails = await this.okraScraper.getCustomerDetails();
-    const customerExists = await this.customersService.find({
+    const [customerDetails, accountsDetails] = await Promise.all([
+      this.okraScraper.getCustomerDetails(),
+      this.okraScraper.getAccountDetails(),
+    ]);
+
+    await this.okraScraper.closeBrowser();
+
+    const existingCustomer = await this.customersService.find({
       email: customerDetails.email,
     });
-
-    if (!customerExists) {
+    let customerId = existingCustomer?._id.toString();
+    if (!existingCustomer) {
       const customerData = this.formatter.customerFormatter({
         address: customerDetails?.address,
         bvn: customerDetails?.bvn,
@@ -89,10 +105,31 @@ export default class AuthService {
         lastName: customerDetails?.lastName,
         authId,
       });
-      await this.customersService.create(customerData);
+      const createdCustomer = await this.customersService.create(customerData);
+      customerId = createdCustomer._id.toString();
     }
 
-    await this.okraScraper.closeBrowser();
+    const createAccountPromise = [];
+
+    for (const accountsDetail of accountsDetails) {
+      const account = await this.accountsService.find({
+        accountNumber: accountsDetail.accountNumber,
+      });
+
+      if (!account) {
+        const accountData = this.formatter.accountsFormatter({
+          accountName: accountsDetail?.accountName,
+          accountNumber: accountsDetail?.accountNumber,
+          balance: accountsDetail.accountBalance,
+          ledgerBalance: accountsDetail.ledgerBalance,
+          currency: currencyMap[accountsDetail.currency],
+          customerId,
+        });
+        createAccountPromise.push(this.accountsService.create(accountData));
+      }
+    }
+
+    await Promise.all(createAccountPromise);
 
     return {
       data: {},

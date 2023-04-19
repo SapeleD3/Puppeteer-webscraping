@@ -7,11 +7,13 @@ import ScrapeBankOfOkra from 'src/common/bankScraper/institutions/okra';
 import Formatter from 'src/common/formatter.service';
 import CustomersService from '../customers/customers.service';
 import CustomersModule from '../customers/customers.module';
+import AccountsModule from '../accounts/accounts.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Auth.name, schema: AuthSchema }]),
     CustomersModule,
+    AccountsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, ScrapeBankOfOkra, Formatter],

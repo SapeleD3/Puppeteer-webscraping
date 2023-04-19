@@ -6,11 +6,13 @@ import { mongoBaseUrl } from './common/constants';
 import AuthModule from './domains/authentication/auth.module';
 import { ExceptionFilterModule } from './common/exceptions';
 import CustomersModule from './domains/customers/customers.module';
+import AccountsModule from './domains/accounts/accounts.module';
 
 @Module({
   imports: [
     AuthModule,
     CustomersModule,
+    AccountsModule,
     ExceptionFilterModule,
     ConfigModule.forRoot({
       load: [Env],

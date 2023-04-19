@@ -44,6 +44,35 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Routes
+
+```
+POST /api/auth/login
+Body = {
+    "email": "alphaTester@test.com",
+    "password": "12345678"
+}
+
+Response = {
+    "data": {
+        "authId": "644006938f03d0b30920a051"
+    },
+    "message": "Login successful please input otp"
+}
+```
+
+```
+POST /api/auth/otp?authId=<REPLACE>
+Body = {
+    "otp": "12345"
+}
+
+Response = {
+    "data": {},
+    "message": "Otp verification successful"
+}
+```
+
 ## Notes on Possible Improvements and Challenges
 
 - The test scope does not involve app level authentication, will move forward from this. but possible improvements include encrypting the inputed password and decrypting it for logging the user in and making the verify otp route authenticated

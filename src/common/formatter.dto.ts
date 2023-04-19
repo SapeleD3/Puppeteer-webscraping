@@ -1,3 +1,5 @@
+import { AccountsMeta } from './types';
+
 export class FormattedAuthData {
   email: string;
   password: string;
@@ -13,6 +15,13 @@ export class FormattedCustomerData {
   authId: string;
 }
 
-export class FormattedAccounstData {}
+export class FormattedAccounstData {
+  accountName: string;
+  accountNumber: string;
+  balance: string;
+  ledgerBalance: string;
+  currency: string;
+  customerId: string;
+}
 
 export class FormattedTransactionData {}

@@ -101,12 +101,7 @@ export default class ScrapeBankOfOkra extends Scraper implements BankScraper {
   }
 
   async getAccountDetails() {
-    try {
-      await this.page.waitForSelector('section', { timeout: 2000 });
-    } catch (error) {
-      Logger.log('Account Details not found within 2 seconds.');
-    }
-
+    await this.page.waitForSelector('section');
     const accountInfo = await this.page.$$eval('section', (sections) => {
       return sections.reduce(
         (agg: Record<string, AccountDetails>, section: Element) => {
