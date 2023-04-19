@@ -46,7 +46,6 @@ export default class AuthService {
     }
 
     const authUser = await this.find({ email: payload.email });
-    console.log(authUser);
     let authId = authUser?._id;
 
     if (!authUser) {

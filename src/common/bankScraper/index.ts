@@ -16,10 +16,19 @@ export default class Scraper {
 
   public async initBrowser(pageUrl: string): Promise<void> {
     try {
-      this.browser = await puppeteer.launch({
-        headless: true,
-        executablePath: executablePath(),
-      });
+      const ePath = executablePath();
+      console.log('Attempt launching browser', ePath);
+
+      try {
+        this.browser = await puppeteer.launch({
+          headless: true,
+          executablePath: ePath,
+          args: ['--no-sandbox', '--disable-gpu'],
+        });
+      } catch (error) {
+        console.log('error launching browser: ', error);
+      }
+      console.log('Browser Launched');
 
       this.page = await this.browser.newPage();
       await this.page.goto(pageUrl);

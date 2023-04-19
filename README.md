@@ -1,7 +1,3 @@
-## Bankof Okra Scrape test
-
-[Challenge Document](https://okrahq.notion.site/Sr-Full-Stack-Engineer-Core-Infrastructure-BE-Institutions-ab05fdb217d64d91b9fddf82ac2846ee) Fullstack Engineer
-
 ## Core Tools and Packages used
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
@@ -89,7 +85,7 @@ Response = {
 
 ## Notes on Possible Improvements and Challenges
 
-- The test scope does not involve app level authentication, will move forward from this. but possible improvements include encrypting the inputed password and decrypting it for logging the user in and making the verify otp route authenticated
+- Does not involve app level authentication, will move forward from this. but possible improvements include encrypting the inputed password and decrypting it for logging the user in and making the verify otp route authenticated
 
 - Not enough time to come up with a way to fetch all transactions from an account without hitting the nestjs request time limit
 
