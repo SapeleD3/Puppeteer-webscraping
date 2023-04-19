@@ -9,7 +9,7 @@ puppeteer.use(stealthPlugin());
 @Injectable()
 export default class Scraper {
   institution: Institutions;
-  private browser: Browser;
+  browser: Browser;
   page: Page;
 
   constructor() {}
@@ -26,10 +26,6 @@ export default class Scraper {
     } catch (error) {
       Logger.error(error);
     }
-  }
-
-  public async closeBrowser(): Promise<void> {
-    await this.browser.close();
   }
 
   async handleAlerts(): Promise<void> {

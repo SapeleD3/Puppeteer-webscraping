@@ -1,13 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import BaseSchema from 'src/common/base.schema';
-import { AccountsMeta } from 'src/common/types';
-import { Customers } from '../customers/customers.schema';
+import { MS_Customers } from '../customers/customers.schema';
 
-export type AccountDocument = HydratedDocument<Account>;
+export type AccountDocument = HydratedDocument<MS_Account>;
 
 @Schema()
-export class Account extends BaseSchema {
+export class MS_Account extends BaseSchema {
   @Prop()
   accountName: string;
 
@@ -23,8 +22,8 @@ export class Account extends BaseSchema {
   @Prop()
   currency: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Customers.name })
-  customerId: Customers;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: MS_Customers.name })
+  customerId: MS_Customers;
 }
 
-export const AccountSchema = SchemaFactory.createForClass(Account);
+export const AccountSchema = SchemaFactory.createForClass(MS_Account);

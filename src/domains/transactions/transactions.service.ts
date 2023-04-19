@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { FilterQuery, Model, Types } from 'mongoose';
-import { Transaction, TransactionsDocument } from './transactions.schema';
+import { MS_Transaction, TransactionsDocument } from './transactions.schema';
 import AuthService from '../authentication/auth.service';
 import { GetTransactionsByAccountNumberQueryParam } from './transactions.dto';
 import AccountsService from '../accounts/accounts.service';
@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 @Injectable()
 export default class TransactionsService {
   constructor(
-    @InjectModel(Transaction.name)
+    @InjectModel(MS_Transaction.name)
     private transactionModel: Model<TransactionsDocument>,
     private readonly authService: AuthService,
     private readonly accountService: AccountsService,
@@ -29,7 +29,7 @@ export default class TransactionsService {
     return createdTransaction.save();
   }
 
-  async findAll(): Promise<Transaction[]> {
+  async findAll(): Promise<MS_Transaction[]> {
     return this.transactionModel.find().exec();
   }
 

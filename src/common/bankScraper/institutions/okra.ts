@@ -18,6 +18,13 @@ export default class ScrapeBankOfOkra extends Scraper implements BankScraper {
   private BASE_URL = 'https://bankof.okra.ng';
   private LOGIN_PATH = '/login';
 
+  public async closeBrowser(): Promise<void> {
+    //TODO: Handle logout
+    try {
+    } catch (error) {}
+    await this.browser.close();
+  }
+
   async handleFormErrors(): Promise<string> {
     const errorMessageClassName =
       '.font-bold.text-sm.text-center.text-red-500.mb-3.mt-2';

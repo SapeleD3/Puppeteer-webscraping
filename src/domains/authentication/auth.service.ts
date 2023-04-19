@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Auth, AuthDocument } from './auth.schema';
+import { MS_Auth, AuthDocument } from './auth.schema';
 import { LoginDto, OtpDto } from './auth.dto';
 import ScrapeBankOfOkra from 'src/common/bankScraper/institutions/okra';
 import { VerifyOtpPayload } from './types';
 import Formatter from 'src/common/formatter.service';
-import { Institutions } from 'src/common/enums';
 import { FormattedAuthData } from 'src/common/formatter.dto';
 import CustomersService from '../customers/customers.service';
 import AccountsService from '../accounts/accounts.service';
@@ -18,7 +17,7 @@ const currencyMap = {
 @Injectable()
 export default class AuthService {
   constructor(
-    @InjectModel(Auth.name)
+    @InjectModel(MS_Auth.name)
     private authModel: Model<AuthDocument>,
     private readonly okraScraper: ScrapeBankOfOkra,
     private readonly formatter: Formatter,
@@ -31,7 +30,7 @@ export default class AuthService {
     return createdCat.save();
   }
 
-  async findAll(): Promise<Auth[]> {
+  async findAll(): Promise<MS_Auth[]> {
     return this.authModel.find().exec();
   }
 
@@ -47,6 +46,7 @@ export default class AuthService {
     }
 
     const authUser = await this.find({ email: payload.email });
+    console.log(authUser);
     let authId = authUser?._id;
 
     if (!authUser) {
@@ -59,7 +59,7 @@ export default class AuthService {
 
     return {
       data: {
-        authId: authUser._id,
+        authId,
       },
       message: 'Login successful please input otp',
     };

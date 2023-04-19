@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Account, AccountDocument } from './accounts.schema';
+import { MS_Account, AccountDocument } from './accounts.schema';
 import { FormattedAccounstData } from 'src/common/formatter.dto';
-import { Customers } from '../customers/customers.schema';
 
 @Injectable()
 export default class AccountsService {
   constructor(
-    @InjectModel(Account.name)
+    @InjectModel(MS_Account.name)
     private accountModel: Model<AccountDocument>,
   ) {}
 
@@ -19,7 +18,7 @@ export default class AccountsService {
     return createdAccount.save();
   }
 
-  async findAll(): Promise<Account[]> {
+  async findAll(): Promise<MS_Account[]> {
     return this.accountModel.find().exec();
   }
 

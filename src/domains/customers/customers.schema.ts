@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import BaseSchema from 'src/common/base.schema';
-import { Auth } from '../authentication/auth.schema';
+import { MS_Auth } from '../authentication/auth.schema';
 
-export type CustomersDocument = HydratedDocument<Customers>;
+export type CustomersDocument = HydratedDocument<MS_Customers>;
 
 @Schema()
-export class Customers extends BaseSchema {
+export class MS_Customers extends BaseSchema {
   @Prop()
   address: string;
 
@@ -25,8 +25,8 @@ export class Customers extends BaseSchema {
   @Prop()
   lastName: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Auth.name })
-  authId: Auth;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: MS_Auth.name })
+  authId: MS_Auth;
 }
 
-export const CustomerSchema = SchemaFactory.createForClass(Customers);
+export const CustomerSchema = SchemaFactory.createForClass(MS_Customers);

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Customers, CustomersDocument } from './customers.schema';
+import { MS_Customers, CustomersDocument } from './customers.schema';
 import { FormattedCustomerData } from 'src/common/formatter.dto';
 
 @Injectable()
 export default class CustomersService {
   constructor(
-    @InjectModel(Customers.name)
+    @InjectModel(MS_Customers.name)
     private customerModel: Model<CustomersDocument>,
   ) {}
 
@@ -18,7 +18,7 @@ export default class CustomersService {
     return createdCustomer.save();
   }
 
-  async findAll(): Promise<Customers[]> {
+  async findAll(): Promise<MS_Customers[]> {
     return this.customerModel.find().exec();
   }
 
