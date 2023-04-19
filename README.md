@@ -44,6 +44,14 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Notes on Possible Improvements and Challenges
+
+- The test scope does not involve app level authentication, will move forward from this. but possible improvements include encrypting the inputed password and decrypting it for logging the user in and making the verify otp route authenticated
+
+- Not enough time to come up with a way to fetch all transactions from an account without hitting the nestjs request time limit
+
+- Latency issues with the site or internet provider makes the response time and reponse type ("Error"/"Success") differ
+
 ## Stay in touch
 
 - Author - [Sapele Moses](oyinkuromosesvictor@gmail.com)

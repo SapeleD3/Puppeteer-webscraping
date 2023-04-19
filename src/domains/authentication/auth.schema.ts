@@ -10,10 +10,7 @@ export class Auth extends BaseSchema {
   email: string;
 
   @Prop()
-  password: number;
-
-  @Prop()
-  browserPage: string;
+  password: string;
 }
 
 export const AuthSchema = SchemaFactory.createForClass(Auth);

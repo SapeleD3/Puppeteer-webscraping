@@ -1,8 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiGrouping } from '../../common/enums';
 import { generateControllerPath } from '../../common/utils/modifiers';
 import AuthService from './auth.service';
-import { LoginDto, OtpDto } from './auth.dto';
+import { LoginDto, OtpDto, VerifyOtpQUeryParams } from './auth.dto';
 
 @Controller({
   path: generateControllerPath({ group: ApiGrouping.AUTH }),
@@ -19,8 +26,14 @@ export default class AuthController {
 
   @Post('/otp')
   @HttpCode(HttpStatus.OK)
-  verifyOtp(@Body() otpBody: OtpDto) {
-    const data = this.authService.verifyOtp(otpBody);
+  verifyOtp(
+    @Body() otpBody: OtpDto,
+    @Query() queryParams: VerifyOtpQUeryParams,
+  ) {
+    const data = this.authService.verifyOtp({
+      otp: otpBody.otp,
+      authId: queryParams.authId,
+    });
     return data;
   }
 }
