@@ -12,3 +12,8 @@ export enum RouteTag {
 export enum Institutions {
   OKRA = 'okra',
 }
+
+export enum TransactionType {
+  DEBIT = 'debit',
+  CREDIT = 'credit',
+}

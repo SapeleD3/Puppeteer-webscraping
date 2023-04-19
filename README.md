@@ -73,6 +73,20 @@ Response = {
 }
 ```
 
+```
+GET /api/transactions?accountNumber=<REPLACE>&otp=<REPLACE>
+
+Response = {
+    "data": {
+        "from": 1,
+        "to": 10,
+        "totalPages": 813,
+        "transactions": []
+    },
+    "message": "Transactions scraped successful"
+}
+```
+
 ## Notes on Possible Improvements and Challenges
 
 - The test scope does not involve app level authentication, will move forward from this. but possible improvements include encrypting the inputed password and decrypting it for logging the user in and making the verify otp route authenticated

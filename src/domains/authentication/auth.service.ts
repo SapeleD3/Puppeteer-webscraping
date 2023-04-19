@@ -132,7 +132,7 @@ export default class AuthService {
     await Promise.all(createAccountPromise);
 
     return {
-      data: {},
+      data: { customerDetails, accountsDetails },
       message: 'Otp verification successful',
     };
   }

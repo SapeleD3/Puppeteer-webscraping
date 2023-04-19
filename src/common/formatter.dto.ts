@@ -1,3 +1,4 @@
+import { TransactionType } from './enums';
 import { AccountsMeta } from './types';
 
 export class FormattedAuthData {
@@ -24,4 +25,12 @@ export class FormattedAccounstData {
   customerId: string;
 }
 
-export class FormattedTransactionData {}
+export class FormattedTransactionData {
+  type: TransactionType;
+  date: number;
+  description: string;
+  amount: string;
+  beneficiary: string;
+  sender: string;
+  accountId: string;
+}

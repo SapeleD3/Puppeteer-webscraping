@@ -3,6 +3,7 @@ import {
   FormattedAccounstData,
   FormattedAuthData,
   FormattedCustomerData,
+  FormattedTransactionData,
 } from './formatter.dto';
 
 // minimalistic standardized formatter
@@ -19,7 +20,7 @@ export default class Formatter {
     return payload;
   }
 
-  transactionsFormatter(payload: any) {
+  transactionsFormatter(payload: FormattedTransactionData) {
     return payload;
   }
 }

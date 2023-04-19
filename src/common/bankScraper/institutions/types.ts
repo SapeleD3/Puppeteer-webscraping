@@ -1,3 +1,5 @@
+import { TransactionType } from 'src/common/enums';
+
 export type HandleOtpVerificationPayload = {
   email: string;
   password: string;
@@ -19,4 +21,26 @@ export type CustomerDetails = {
   email: string;
   firstName: string;
   lastName: string;
+};
+
+export type TransactionPagesDetail = {
+  from: number;
+  to: number;
+  totalPages: number;
+};
+
+export type TransactionData = {
+  type: string;
+  date: string;
+  description: string;
+  amount: string;
+  beneficiary: string;
+  sender: string;
+};
+
+export type GetTransactionsResponse = {
+  from: number;
+  to: number;
+  totalPages: number;
+  transactions: TransactionData[];
 };

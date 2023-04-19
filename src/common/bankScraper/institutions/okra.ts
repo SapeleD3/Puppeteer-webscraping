@@ -6,7 +6,10 @@ import { LoginDto } from 'src/domains/authentication/auth.dto';
 import {
   AccountDetails,
   CustomerDetails,
+  GetTransactionsResponse,
   HandleOtpVerificationPayload,
+  TransactionData,
+  TransactionPagesDetail,
 } from './types';
 
 @Injectable()
@@ -132,5 +135,100 @@ export default class ScrapeBankOfOkra extends Scraper implements BankScraper {
       );
     });
     return Object.values(accountInfo);
+  }
+
+  private async pulltransactionData(): Promise<TransactionData[]> {
+    await this.page.waitForSelector('table');
+    const transactionData = await this.page.evaluate(() => {
+      const transactionTable = document.querySelector('table tbody'); // Assuming only one table on the page
+      const transactionRows = transactionTable.querySelectorAll('tr'); // Assuming the transaction data is in the first tbody element
+
+      const transactions = [];
+
+      for (let i = 0; i < transactionRows.length; i++) {
+        const row = transactionRows[i];
+        if (!row.querySelector('td')) {
+          continue;
+        }
+
+        const amount = row.querySelector('td:nth-child(4)').textContent.trim();
+        const transaction: TransactionData = {
+          type: row.querySelector('th:nth-child(1)').textContent.trim(),
+          date: row.querySelector('td:nth-child(2)').textContent.trim(),
+          description: row.querySelector('td:nth-child(3)').textContent.trim(),
+          amount: amount.replace(/[$₦]/g, ''),
+          beneficiary: row.querySelector('td:nth-child(5)').textContent.trim(),
+          sender: row.querySelector('td:nth-child(6)').textContent.trim(),
+        };
+        transactions.push(transaction);
+      }
+
+      return transactions;
+    });
+
+    return transactionData;
+  }
+
+  private async pullBatchTransactions({ totalPages, batchNumber }) {
+    const buttonClassName =
+      '.py-2.px-4.text-sm.font-medium.text-white.bg-gray-800.rounded-r.border-0.border-l.border-gray-700.hover:bg-gray-900.dark:bg-gray-800.dark:border-gray-700.dark:text-gray-400.dark:hover:bg-gray-700.dark:hover:text-white';
+
+    try {
+      await this.page.waitForSelector(buttonClassName, { timeout: 2000 });
+    } catch (error) {
+      Logger.log('Account Details not found within 2 seconds.');
+    }
+
+    const batchTransaction = await this.pulltransactionData();
+    const isLastBatch = batchNumber * 10 >= totalPages;
+    if (!isLastBatch) {
+      // click Next button
+      this.page.click(buttonClassName);
+    }
+    return batchTransaction;
+  }
+
+  async getTransactionsByAccounts(
+    accountNumber: string,
+  ): Promise<GetTransactionsResponse> {
+    await this.page.waitForSelector('section');
+    await this.page.click(`[href="/account-${accountNumber}"]`);
+    await this.page.waitForSelector('.font-semibold.text-gray-900');
+    const pagesData: TransactionPagesDetail = await this.page.$$eval(
+      '.font-semibold.text-gray-900',
+      (pagination) => {
+        return pagination.reduce(
+          (agg: TransactionPagesDetail, value: Element, i: number) => {
+            const pageMap = {
+              0: 'from',
+              1: 'to',
+              2: 'totalPages',
+            };
+
+            agg[pageMap[i]] = Number(value.textContent);
+
+            return agg;
+          },
+          { from: 0, to: 0, totalPages: 0 },
+        );
+      },
+    );
+
+    const transactions = await this.pulltransactionData();
+
+    //TODO: Improve strategy for pulling all transactions
+    // for (let i = 0; i < pagesData.totalPages / 10 + 1; i++) {
+    //   const response = await this.pullBatchTransactions({
+    //     totalPages: pagesData.totalPages,
+    //     batchNumber: 1,
+    //   });
+    //   console.log(response.length, i);
+    //   transactions.push(...response);
+    // }
+
+    return {
+      ...pagesData,
+      transactions,
+    };
   }
 }
